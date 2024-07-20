@@ -1,0 +1,219 @@
+<div class="container mt-5">
+   <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()">
+        <div class="form-group">
+          <label for="username">Username*</label>
+          <input type="text"
+          formControlName="username"
+           class="form-control" id="username"/>
+            <span class="text-danger" *ngIf="f['username'].touched && f['username'].hasError('required')">
+                Username is required field !!
+            </span>
+            <ng-container *ngIf="f['username'].dirty">
+               <span class="text-danger" *ngIf="f['username'].hasError('noSpaceBar')">
+                   Space is not allowed in username
+               </span>
+               <span class="text-danger" *ngIf="f['username'].hasError('minlength')">
+                  Minimum length of username should be 
+                  {{f['username'].errors?.['minlength'].requiredLength}}
+                  and the actual length is 
+                  {{f['username'].errors?.['minlength'].actualLength}}
+                </span>
+                <span class="text-danger" *ngIf="f['username'].hasError('maxlength')">
+                  Minimum length of username should be 
+                  {{f['username'].errors?.['maxlength'].requiredLength}}
+                  and the actual length is 
+                  {{f['username'].errors?.['maxlength'].actualLength}}
+                </span>
+                <span class="text-danger" *ngIf="f['username'].hasError('pattern')">
+                  username should not include number and special characters 
+                </span>
+            </ng-container>
+            
+
+
+        </div>
+
+        <div class="form-grouup">
+          <label for="email">Email*</label>
+          <input type="text"
+          formControlName="email" 
+          class="form-control" id="email">
+
+          <span class="text-danger" *ngIf="f['email'].touched && f['email'].hasError('required')">
+            Email is required field
+          </span>
+
+          <span class="text-danger" *ngIf="f['email'].dirty && f['email'].hasError('pattern')">
+           Invalid Email Id
+          </span>
+          <!--<div *ngIf="f['email'].pending" class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div> -->
+          <span class="text-danger" *ngIf="f['email'].dirty && f['email'].hasError('emailExistErr')">
+            {{f['email'].errors?.['emailExistErr']}}
+          </span>
+          <span class="text-success" *ngIf="f['email'].dirty && f['email'].valid">
+            This email is Available
+          </span>
+
+        </div>
+
+        <div class="form-group">
+          <label for="empId">EmpId</label>
+          <input type="text"
+          placeholder="E456"
+          formControlName="empId" 
+          class="form-control" id="empId">
+          <span class="text-danger" *ngIf="f['empId'].touched && f['empId'].hasError('required')">
+            Employee Id is required field
+          </span>
+          <span class="text-danger" *ngIf="f['empId'].dirty && f['empId'].hasError('invalidEmpId')">
+            {{f['empId'].errors?.['invalidEmpId']}}
+           </span> 
+
+        </div>
+       
+        <div class="form-group">
+          <h5>Gender*</h5>
+          <ng-container *ngFor="let gender of genderArr">
+            <label [for]="gender">
+              <input type="radio"
+            [value]="gender"
+            name="gender"
+            formControlName="gender"
+            [id]="gender"/>
+            </label>
+              {{gender | titlecase}}
+          </ng-container>
+        </div>
+        <div formArrayName="skills">
+          <h5>Add Skills</h5>
+          <div class="row" *ngFor="let skill of skillsFormArr.controls; let i = index">
+             <div class="col-md-10">
+               <input type="text"
+               [formControlName]="i"
+               class="form-control mb-2">
+             </div>
+             <div class="col-md-2" *ngIf="i > 0">
+               <button
+               (click)="onSkillRemove(i)"
+               type="button" class="btn btn-sm btn-danger">Remove</button>
+             </div>
+          </div>
+          
+          <div class="row">
+           <div class="col">
+             <button *ngIf="skillsFormArr.length < 5; else noMoreSkill"
+              (click)="onSkillAdd()"
+             type="button"
+             class="btn btn-sm btn-primary mb-4">Add More Skills</button>
+             <ng-template #noMoreSkill>
+               <span class="text-warning">
+                 You can add  maximum 5 skills
+               </span>
+             </ng-template>
+             
+           </div>
+          </div>
+     </div>
+
+     <div class="row mb-5">
+       <div class="col-md-6" formGroupName="currentAddress">
+         <h5>Current Address</h5>
+         <label for="country">Country</label>
+         <select id="country" formControlName="country"  class="form-control">
+           <option value="">Select Country</option>
+           <option [value]="country.Country" *ngFor="let country of cuntryArr">
+             {{country.Country}}
+           </option>
+         </select>
+         <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" formControlName="state"  class="form-control" id="state">
+
+           
+         </div>
+
+         <div class="form-group">
+           <label for="city">City</label>
+           <input type="text" formControlName="city"  class="form-control" id="city">
+        </div>
+
+        <div class="form-group">
+         <label for="zipcode">Zipcode</label>
+         <input type="text" formControlName="zipcode"  class="form-control" id="zipcode">
+        
+      </div>
+       </div>
+
+       <div class="col-md-6" formGroupName="permanentAddress">
+         <h5>Permanent Address</h5>
+         <label for="country">Country</label>
+         <select id="country" formControlName="country"  class="form-control">
+           <option value="">Select Country</option>
+           <option [value]="country.Country" *ngFor="let country of cuntryArr">
+             {{country.Country}}
+           </option>
+         </select>
+         <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" formControlName="state"  class="form-control" id="state">
+
+         <!--  <span class="text-danger" *ngIf="currAddInnerFormGrp['state'].touched && currAddInnerFormGrp['state'].hasError('required)">
+              State is mandatory in currenet Address
+            </span> --> 
+         </div>
+
+         <div class="form-group">
+           <label for="city">City</label>
+           <input type="text" formControlName="city"  class="form-control" id="city">
+        </div>
+
+        <div class="form-group">
+         <label for="zipcode">Zipcode</label>
+         <input type="text" formControlName="zipcode"  class="form-control" id="zipcode">
+      </div>
+       </div>
+       
+       <div class="col-md-12">
+          <label for="isAddSame">
+           <input  formControlName="isAddSame" type="checkbox" id="isAddSame"/>
+            Current Address and Permanent Address both are same
+          </label>
+       </div>
+     </div>
+
+     <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password"
+        id="password" formControlName="password"  class="form-control">
+        <span class="text-danger" *ngIf="f['password'].dirty &&
+                  f['password'].hasError('pattern')">
+               Password should be atleast 8 characters long
+                 and should contain one number,one character and one special
+                 character
+        </span>
+     </div>
+     <div class="form-group">
+       <label for="confirmPassword">Confirm Password</label>
+       <input type="password" id="confirmPassword" formControlName="confirmPassword"  class="form-control">
+    </div>
+    <span class="text-danger" *ngIf="f['password'].value !== f['confirmPassword'].value">
+       Password and confirm password must be same
+    </span>
+
+        
+        <button 
+           type="submit"
+         class="btn btn-block btn-primary">SignUp</button>
+      </form>
+      <hr>
+         {{signUpForm.getRawValue()| json}}
+      <br>
+      <br>
+
+    </div>
+   </div>
+</div>
